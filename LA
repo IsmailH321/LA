@@ -1,0 +1,404 @@
+#Addition of two complex numbers, Displaying the conjugate of a complex number, Plotting a set of complex numbers
+
+import matplotlib.pyplot as plt
+
+class ComplexNumber:
+    def __init__(self, real, imag):
+        self.real = real
+        self.imag = imag
+
+    def add(self, other):
+        return ComplexNumber(self.real + other.real, self.imag + other.imag)
+
+    def conjugate(self):
+        return ComplexNumber(self.real, -self.imag)
+
+    def __str__(self):
+        return f"{self.real} + {self.imag}i"
+
+def plot_complex_numbers(complex_numbers):
+    plt.figure(figsize=(8, 8))
+    plt.axhline(0, color='black', linewidth=0.5, ls='--')
+    plt.axvline(0, color='black', linewidth=0.5, ls='--')
+    
+    for cn in complex_numbers:
+        plt.plot(cn.real, cn.imag, 'bo')
+        plt.text(cn.real, cn.imag, str(cn), fontsize=12, ha='right')
+
+    plt.xlim(-10, 10)
+    plt.ylim(-10, 10)
+    plt.xlabel('Real Part')
+    plt.ylabel('Imaginary Part')
+    plt.title('Plot of Complex Numbers')
+    plt.grid()
+    plt.show()
+
+if __name__ == "__main__":
+    c1 = ComplexNumber(3, 4)
+    c2 = ComplexNumber(1, 2)
+
+    sum_c = c1.add(c2)
+    print(f"Addition of {c1} and {c2} = {sum_c}")
+
+    conjugate_c1 = c1.conjugate()
+    print(f"Conjugate of {c1} = {conjugate_c1}")
+
+    complex_numbers = [c1, c2, sum_c, conjugate_c1]
+    plot_complex_numbers(complex_numbers)
+
+#Enter a vector u as a n-list, Enter another vector v as a n-list, Find the vector au + bv for different values of a and b, Find the dot product of u and v
+
+def input_vector(prompt):
+    return list(map(float, input(prompt).strip().split()))
+
+def linear_combination(u, v, a, b):
+    return [a * u[i] + b * v[i] for i in range(len(u))]
+
+def dot_product(u, v):
+    return sum(u[i] * v[i] for i in range(len(u)))
+
+if __name__ == "__main__":
+    print("Enter vector u (space-separated values):")
+    u = input_vector("u: ")
+    
+    print("Enter vector v (space-separated values):")
+    v = input_vector("v: ")
+
+    if len(u) != len(v):
+        print("Error: Vectors must be of the same length.")
+    else:
+        print("Enter values for a and b:")
+        a = float(input("a: "))
+        b = float(input("b: "))
+
+        result = linear_combination(u, v, a, b)
+        print(f"The vector au + bv is: {result}")
+
+        dot_prod = dot_product(u, v)
+        print(f"The dot product of u and v is: {dot_prod}")
+
+#Basic Matrix Operations: Matrix Addition, Subtraction, Multiplication, Check if matrix is invertible., If yes then find Inverse
+
+import numpy as np
+
+def input_matrix(prompt):
+    print(prompt)
+    rows = int(input("Enter the number of rows: "))
+    matrix = []
+    for i in range(rows):
+        row = list(map(float, input(f"Enter row {i + 1} (space-separated values): ").strip().split()))
+        matrix.append(row)
+    return np.array(matrix)
+
+def matrix_operations():
+    print("Matrix A:")
+    A = input_matrix("Input for Matrix A")
+
+    print("Matrix B:")
+    B = input_matrix("Input for Matrix B")
+
+    print("\nMatrix A:")
+    print(A)
+    print("\nMatrix B:")
+    print(B)
+
+    print("\nMatrix Addition (A + B):")
+    print(A + B)
+
+    print("\nMatrix Subtraction (A - B):")
+    print(A - B)
+
+    print("\nMatrix Multiplication (A * B):")
+    print(A @ B)
+
+    if np.linalg.det(A) != 0:
+        print("\nMatrix A is invertible.")
+        print("Inverse of Matrix A:")
+        print(np.linalg.inv(A))
+    else:
+        print("\nMatrix A is not invertible.")
+
+if __name__ == "__main__":
+    matrix_operations()
+
+#Basic Matrix Application – I Representation of Image in Matrix Format and Image Transformations
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def load_image(image_path):
+    img = cv2.imread(image_path)
+    if img is None:
+        print("Error: Could not load image.")
+        exit()
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return img
+
+def image_to_matrix(img):
+    return np.array(img)
+
+def matrix_to_image(matrix):
+    return matrix
+
+def rotate_image(matrix, angle):
+    h, w = matrix.shape[:2]
+    center = (w // 2, h // 2)
+    matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+    rotated = cv2.warpAffine(matrix, matrix, (w, h))
+    return rotated
+
+def flip_image(matrix, direction='horizontal'):
+    if direction == 'horizontal':
+        return cv2.flip(matrix, 1)
+    else:
+        return cv2.flip(matrix, 0)
+
+def display_images(original, transformed, title):
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.title("Original Image")
+    plt.imshow(original)
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.title(title)
+    plt.imshow(transformed)
+    plt.axis('off')
+
+    plt.show()
+
+if __name__ == "__main__":
+    image_path = input("Enter the path to the image file: ")
+    img = load_image(image_path)
+    
+    matrix = image_to_matrix(img)
+    print("Image represented as matrix:")
+    print(matrix)
+
+    angle = float(input("Enter the angle to rotate the image (degrees): "))
+    rotated_matrix = rotate_image(matrix, angle)
+    display_images(matrix, rotated_matrix, f"Rotated Image by {angle} degrees")
+
+    direction = input("Enter flip direction (horizontal/vertical): ").strip().lower()
+    flipped_matrix = flip_image(matrix, direction)
+    display_images(matrix, flipped_matrix, f"Flipped Image ({direction})")
+
+#Basic Matrix Application – II Perform Image addition, multiplication and subtraction
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def load_image(image_path):
+    img = cv2.imread(image_path)
+    if img is None:
+        print("Error: Could not load image.")
+        exit()
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+def display_images(images, titles):
+    plt.figure(figsize=(15, 5))
+    for i in range(len(images)):
+        plt.subplot(1, len(images), i + 1)
+        plt.title(titles[i])
+        plt.imshow(images[i])
+        plt.axis('off')
+    plt.show()
+
+def main():
+    image_path1 = input("Enter the path to the first image file: ")
+    image_path2 = input("Enter the path to the second image file: ")
+
+    img1 = load_image(image_path1)
+    img2 = load_image(image_path2)
+
+    if img1.shape != img2.shape:
+        print("Error: Images must have the same dimensions for these operations.")
+        exit()
+
+    added_image = cv2.add(img1, img2)
+
+    subtracted_image = cv2.subtract(img1, img2)
+
+    multiplied_image = cv2.multiply(img1, img2)
+
+    display_images([img1, img2, added_image, subtracted_image, multiplied_image], 
+                   ["Image 1", "Image 2", "Added Image", "Subtracted Image", "Multiplied Image"])
+
+if __name__ == "__main__":
+    main()
+
+#Create new plot by rotating the given number by 90, 180, 270 degrees.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def rotate_point(point, angle):
+    rotation_matrix = np.array([[np.cos(np.radians(angle)), -np.sin(np.radians(angle))],
+                                 [np.sin(np.radians(angle)), np.cos(np.radians(angle))]])
+    return rotation_matrix @ point
+
+def plot_rotations(original_point):
+    angles = [90, 180, 270]
+    points = [original_point] + [rotate_point(original_point, angle) for angle in angles]
+
+    points = np.array(points)
+
+    plt.figure(figsize=(8, 8))
+    plt.plot(points[:, 0], points[:, 1], 'ro-')
+    plt.text(original_point[0], original_point[1], 'Original', fontsize=12, ha='right')
+    for i, angle in enumerate(angles):
+        plt.text(points[i + 1, 0], points[i + 1, 1], f'Rotate {angle}°', fontsize=12, ha='right')
+
+    plt.axhline(0, color='black', linewidth=0.5, ls='--')
+    plt.axvline(0, color='black', linewidth=0.5, ls='--')
+    plt.xlim(-2, 2)
+    plt.ylim(-2, 2)
+    plt.grid()
+    plt.title("Rotations of a Point")
+    plt.gca().set_aspect('equal')
+    plt.show()
+
+if __name__ == "__main__":
+    original_point = np.array([1, 0])
+    plot_rotations(original_point)
+
+#Python program to create a Complex number calculator
+
+class ComplexNumber:
+    def __init__(self, real, imag):
+        self.real = real
+        self.imag = imag
+
+    def __add__(self, other):
+        return ComplexNumber(self.real + other.real, self.imag + other.imag)
+
+    def __sub__(self, other):
+        return ComplexNumber(self.real - other.real, self.imag - other.imag)
+
+    def __mul__(self, other):
+        return ComplexNumber(self.real * other.real - self.imag * other.imag,
+                             self.real * other.imag + self.imag * other.real)
+
+    def __truediv__(self, other):
+        denom = other.real ** 2 + other.imag ** 2
+        return ComplexNumber((self.real * other.real + self.imag * other.imag) / denom,
+                             (self.imag * other.real - self.real * other.imag) / denom)
+
+    def conjugate(self):
+        return ComplexNumber(self.real, -self.imag)
+
+    def __str__(self):
+        return f"{self.real} + {self.imag}i"
+
+def main():
+    c1 = ComplexNumber(float(input("Enter real part of first complex number: ")),
+                       float(input("Enter imaginary part of first complex number: ")))
+    c2 = ComplexNumber(float(input("Enter real part of second complex number: ")),
+                       float(input("Enter imaginary part of second complex number: ")))
+
+    print(f"\nC1: {c1}\nC2: {c2}")
+    print(f"Addition: {c1 + c2}")
+    print(f"Subtraction: {c1 - c2}")
+    print(f"Multiplication: {c1 * c2}")
+    print(f"Division: {c1 / c2}")
+    print(f"Conjugate of C1: {c1.conjugate()}")
+    print(f"Conjugate of C2: {c2.conjugate()}")
+
+if __name__ == "__main__":
+    main()
+
+#Write a Python program to create a Matrix calculator
+
+import numpy as np
+
+def input_matrix(prompt):
+    return np.array([list(map(float, input(f"Enter row {i + 1} (space-separated values) for {prompt}: ").split())) 
+                     for i in range(int(input(f"Enter number of rows for {prompt}: ")))])
+
+def main():
+    A = input_matrix("Matrix A")
+    B = input_matrix("Matrix B")
+
+    print("\nMatrix A:\n", A)
+    print("\nMatrix B:\n", B)
+    print("\nAddition (A + B):\n", A + B)
+    print("\nSubtraction (A - B):\n", A - B)
+    print("\nMultiplication (A * B):\n", A @ B)
+    print("\nDeterminant of A:", np.linalg.det(A) if A.shape[0] == A.shape[1] else "Not applicable.")
+    print("\nDeterminant of B:", np.linalg.det(B) if B.shape[0] == B.shape[1] else "Not applicable.")
+
+if __name__ == "__main__":
+    main()
+
+#Write a program to convert a matrix into its row echelon form. (Order 2).
+
+import numpy as np
+
+def row_echelon_form(matrix):
+    matrix = matrix.astype(float)
+    for i in range(len(matrix)):
+        if matrix[i, i] == 0:  # Swap rows if leading coefficient is zero
+            for j in range(i + 1, len(matrix)):
+                if matrix[j, i] != 0:
+                    matrix[[i, j]] = matrix[[j, i]]
+                    break
+        if matrix[i, i] != 0:  # Normalize leading coefficient
+            matrix[i] /= matrix[i, i]
+        for j in range(i + 1, len(matrix)):  # Eliminate below
+            matrix[j] -= matrix[i] * matrix[j, i]
+    return matrix
+
+def main():
+    matrix = np.array([[float(input(f"Enter value for row 1, col {i + 1}: ")) for i in range(2)],
+                       [float(input(f"Enter value for row 2, col {i + 1}: ")) for i in range(2)]])
+    print("\nRow Echelon Form:\n", row_echelon_form(matrix))
+
+if __name__ == "__main__":
+    main()
+
+#Write a program to find rank of a matrix.
+
+import numpy as np
+
+def input_matrix():
+    rows = int(input("Enter number of rows: "))
+    matrix = []
+    for i in range(rows):
+        row = list(map(float, input(f"Enter row {i + 1} (space-separated values): ").strip().split()))
+        matrix.append(row)
+    return np.array(matrix)
+
+def main():
+    matrix = input_matrix()
+    rank = np.linalg.matrix_rank(matrix)
+    
+    print("\nMatrix:")
+    print(matrix)
+    print(f"\nRank of the matrix: {rank}")
+
+if __name__ == "__main__":
+    main()
+
+#Enter a vector b and find the projection of b orthogonal to a given vector u, Find the projection of b orthogonal to a set of given vectors
+
+import numpy as np
+ 
+u = np.array([-1, 4])  
+v = np.array([2, 7])  
+ 
+v_norm = np.sqrt(sum(v**2))    
+ 
+proj_of_u_on_v = (np.dot(u, v)/v_norm**2)*v
+ 
+print("Projection of Vector u on Vector v is: ", proj_of_u_on_v)
+
+#program to calculate eigenvalue and eigenvector (Order 2 and 3)
+
+import numpy as np
+a=np.mat("3  -2 ; 1  0")
+print(a)
+print("Eigen values ",np.linalg.eigvals(a))
+ev=np.linalg.eig(a)
+print(ev)
