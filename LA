@@ -1,3 +1,64 @@
+#install scipy
+import os
+
+try:
+    result = os.system('python -m pip install scipy')
+    if result == 0:
+        print("SciPy installed successfully.")
+    else:
+        print("There was an error installing SciPy.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+#install pandas
+import os
+
+os.system('python -m pip install pandas')
+#install matplotlib
+import os
+
+try:
+    result = os.system('python -m pip install matplotlib')
+    if result == 0:
+        print("Matplotlib installed successfully.")
+    else:
+        print("There was an error installing Matplotlib.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+#install networkx
+import os
+
+try:
+    result = os.system('python -m pip install networkx')
+    if result == 0:
+        print("NetworkX installed successfully.")
+    else:
+        print("There was an error installing NetworkX.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+#install numpy
+import os
+
+try:
+    result = os.system('python -m pip install numpy')
+    if result == 0:
+        print("NumPy installed successfully.")
+    else:
+        print("There was an error installing NumPy.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+#install cv2
+import os
+
+try:
+    result = os.system('python -m pip install opencv-python')
+    if result == 0:
+        print("OpenCV (cv2) installed successfully.")
+    else:
+        print("There was an error installing OpenCV (cv2).")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+
 #Addition of two complex numbers, Displaying the conjugate of a complex number, Plotting a set of complex numbers
 
 import matplotlib.pyplot as plt
@@ -402,3 +463,39 @@ print(a)
 print("Eigen values ",np.linalg.eigvals(a))
 ev=np.linalg.eig(a)
 print(ev)
+
+#google page rank algo
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+import scipy as scipy
+
+G = nx.DiGraph()
+
+nodes = ["INDIA", "DUBAI", "CANADA", "SOUTH AFRICA", "SAUDI", "TURKEY"]
+G.add_nodes_from(nodes)
+
+edges = [
+    ('INDIA', 'DUBAI'),
+    ('DUBAI', 'CANADA'),
+    ('DUBAI', 'SOUTH AFRICA'),
+    ('INDIA', 'SAUDI'),
+    ('SAUDI', 'SOUTH AFRICA'),
+    ('TURKEY', 'INDIA'),
+    ('SAUDI', 'DUBAI'),
+]
+G.add_edges_from(edges)
+
+pos = nx.spiral_layout(G)
+
+nx.draw(G, pos, with_labels=True, node_color="lightblue")
+plt.title("Initial Graph Visualization")
+plt.show()
+
+pr1 = nx.pagerank(G)
+print(pr1)
+node_sizes = [round(v = 5100) for v in pr1.values()]
+nx.draw(G, pos, nodelist=list(pr1.keys()), node_size=node_sizes, with_label=True, node_color="lightblue")
+plt.title("Graph Visualization with PageRank")
+plt.show()
